@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +14,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "pressAPI";
+        options.WithClassicLayout();
+        options.WithTheme(ScalarTheme.Default);
+        options.DefaultOpenAllTags = true;
+    });
 }
 
 app.UseHttpsRedirection();
