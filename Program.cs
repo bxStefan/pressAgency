@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using pressAgency.Domain.Context;
+using pressAgency.Middlewares;
 using Scalar.AspNetCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +12,11 @@ builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<PressDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("Postgres")));
+builder.Services.AddTransient<ExceptionMiddleware>();
+
+builder.Services.AddDbContext<PressDbContext>(options => {
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
+});
 
 var app = builder.Build();
 
@@ -29,6 +34,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseAuthorization();
 
