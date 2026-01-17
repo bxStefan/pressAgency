@@ -9,6 +9,7 @@ namespace pressAgency.Domain.Context
 
         public virtual DbSet<Authors> Authors { get; set; }
         public virtual DbSet<Posts> Posts { get; set; }
+        public virtual DbSet<PostsLock> PostsLocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +40,21 @@ namespace pressAgency.Domain.Context
 
                 entity.HasOne(x => x.Author)
                       .WithMany(x => x.Posts)
+                      .HasForeignKey(e => e.AuthorId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<PostsLock>(entity =>
+            {
+                entity.HasKey(e => e.PostLockId);
+
+                entity.HasOne(x => x.Post)
+                      .WithMany(x => x.PostsLocks)
+                      .HasForeignKey(e => e.PostId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Author)
+                      .WithMany(x => x.PostsLocks)
                       .HasForeignKey(e => e.AuthorId)
                       .OnDelete(DeleteBehavior.Restrict);
             });

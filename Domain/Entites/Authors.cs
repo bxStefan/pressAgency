@@ -6,6 +6,7 @@
         public required string Email { get; set; }
         public string? Name { get; set; }
 
-        public virtual ICollection<Posts> Posts { get; set; } = new List<Posts>();
+        public virtual ICollection<Posts>? Posts { get; set; }
+        public virtual ICollection<PostsLock>? PostsLocks { get; set; }
     }
 }

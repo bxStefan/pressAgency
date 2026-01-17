@@ -10,5 +10,6 @@
         public int AuthorId { get; set; }
 
         public Authors? Author { get; set; }
+        public virtual ICollection<PostsLock>? PostsLocks { get; set; }
     }
 }

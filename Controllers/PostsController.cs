@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using pressAgency.Services.Interfaces;
 using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
