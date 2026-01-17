@@ -19,6 +19,11 @@ namespace pressAgency.Domain.Repository
             _dbContext = pressDbContext;
         }
 
+        public async Task<bool> CheckForExisitingPost(string postName)
+        {
+            return await _dbContext.Posts.AnyAsync(x => x.Title.ToLower().Equals(postName));
+        }
+
         public async Task<string> CreatePost(PostsIDTO newPost, int authorId)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -27,8 +32,8 @@ namespace pressAgency.Domain.Repository
             {
                 Posts post = new()
                 {
-                    Title = newPost.Title,
-                    Content = newPost.Content,
+                    Title = newPost.Title.Trim(),
+                    Content = newPost.Content.Trim(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     AuthorId = authorId

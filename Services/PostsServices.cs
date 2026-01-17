@@ -21,6 +21,12 @@ namespace pressAgency.Services
         public async Task<string> CreateNewPost(PostsIDTO newPost)
         {
             int authorId = _httpUserContext.AuthorId;
+
+            var samePostExists = await _postsRepository.CheckForExisitingPost(newPost.Title.Trim().ToLower());
+
+            if (samePostExists)
+                return "Post already exists";
+
             return await _postsRepository.CreatePost(newPost, authorId);
         }
 

@@ -49,7 +49,7 @@ namespace pressAgency.Controllers
         {
             var result = await _postsService.CreateNewPost(newPost);
 
-            if(result == "Failed to create new post")
+            if(result == "Failed to create new post" || result == "Post already exists")
                 return BadRequest(result);
 
             return Ok(result);

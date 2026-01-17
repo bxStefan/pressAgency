@@ -11,6 +11,8 @@ namespace pressAgency.Domain.Repository.Interfaces
 
         Task<PostsODTO> GetSinglePost(int postId);
 
+        Task<bool> CheckForExisitingPost(string postName);
+
         Task<string> CreatePost(PostsIDTO newPost, int authorId);
     }
 }
