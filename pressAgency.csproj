@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -23,10 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\Repository\" />
     <Folder Include="Shared\DTO\IDTO\" />
-    <Folder Include="Shared\DTO\Common\" />
-    <Folder Include="Shared\DTO\ODTO\" />
   </ItemGroup>
 
 </Project>
