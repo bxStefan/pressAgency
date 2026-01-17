@@ -13,6 +13,9 @@ namespace pressAgency.Shared.Constants
         public const string NoPostsFound = "No posts found";
         public const string PostNotFound = "Post not found";
 
+        public const string NoAuthorsFound = "No authors found";
+        public const string AuthorNotFound = "Author not found";
+
         // Route props
         public const string DefaultRouteSuffix = "/api/v1";
     }
