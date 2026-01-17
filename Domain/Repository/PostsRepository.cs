@@ -64,7 +64,9 @@ namespace pressAgency.Domain.Repository
                                                                   .ToString("dd-MM-yyyy HH:mm"),
                                        LastUpdated = x.UpdatedAt.ToLocalTime()
                                                                 .ToString("dd-MM-yyyy HH:mm"),
-                                       Author = x.Author.Name
+                                       Author = x.Author.Name,
+                                       LockedForEdit = x.PostsLocks.Any(pl => pl.PostId == x.PostId &&
+                                                                        pl.LockedExpiresAt > DateTime.UtcNow)
                                    })
                                    .Paginate(page, pageSize);
         }
@@ -83,7 +85,9 @@ namespace pressAgency.Domain.Repository
                                                                       .ToString("dd-MM-yyyy HH:mm"),
                                            LastUpdated = x.UpdatedAt.ToLocalTime()
                                                                     .ToString("dd-MM-yyyy HH:mm"),
-                                           Author = x.Author.Name
+                                           Author = x.Author.Name ?? "Redaction",
+                                           LockedForEdit = x.PostsLocks.Any(pl => pl.PostId == x.PostId &&
+                                                                            pl.LockedExpiresAt > DateTime.UtcNow)
                                        })
                                        .FirstOrDefaultAsync(x => x.PostId == postId);
 

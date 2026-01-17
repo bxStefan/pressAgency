@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using pressAgency.Domain.Repository.Interfaces;
+﻿using pressAgency.Domain.Repository.Interfaces;
+using pressAgency.Infrastructure.Interfaces;
 using pressAgency.Services.Interfaces;
 using pressAgency.Shared.DTO.Common;
 using pressAgency.Shared.DTO.IDTO;
@@ -10,15 +10,17 @@ namespace pressAgency.Services
     public class PostsServices : IPostsServices
     {
         private readonly IPostsRepository _postsRepository;
+        private readonly IHttpUserContext _httpUserContext;
 
-        public PostsServices(IPostsRepository postsRepository)
+        public PostsServices(IPostsRepository postsRepository, IHttpUserContext httpUserContext)
         {
             _postsRepository = postsRepository;
+            _httpUserContext = httpUserContext;
         }
 
         public async Task<string> CreateNewPost(PostsIDTO newPost)
         {
-            var authorId = 1;
+            int authorId = _httpUserContext.AuthorId;
             return await _postsRepository.CreatePost(newPost, authorId);
         }
 

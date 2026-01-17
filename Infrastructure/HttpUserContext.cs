@@ -11,7 +11,7 @@ namespace pressAgency.Infrastructure
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public int? AuthorId => _httpContextAccessor.HttpContext?.Items["UserId"] as int? 
+        public int AuthorId => _httpContextAccessor.HttpContext?.Items["UserId"] as int? 
                                   ?? throw new UnauthorizedAccessException("Unauthorized");
 
         public string AuthorEmail => _httpContextAccessor.HttpContext?.Items["UserEmail"] as string

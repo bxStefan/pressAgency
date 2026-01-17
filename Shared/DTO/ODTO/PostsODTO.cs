@@ -8,5 +8,6 @@
         public string? DatePublished { get; set; }
         public string? LastUpdated { get; set; }
         public string? Author { get; set; }
+        public bool? LockedForEdit { get; set; } = false;
     }
 }

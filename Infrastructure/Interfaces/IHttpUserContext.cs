@@ -2,7 +2,7 @@
 {
     public interface IHttpUserContext
     {
-        int? AuthorId { get; }
+        int AuthorId { get; }
 
         string AuthorEmail { get; }
     }
