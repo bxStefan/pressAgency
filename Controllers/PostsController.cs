@@ -35,6 +35,7 @@ namespace pressAgency.Controllers
         public async Task<ActionResult<PostsODTO>> GetSinglePost(int postId)
         {
             var post = await _postsService.GetSinglePost(postId);
+
             if (post.PostId != 0)
             {
                 return Ok(post);

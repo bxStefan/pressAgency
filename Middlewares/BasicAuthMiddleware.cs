@@ -17,8 +17,8 @@ namespace pressAgency.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            // exclude default routes from auth
-            string currentPath = context.Request.Path.Value;
+            // auth only against api routes
+            string currentPath = context.Request.Path.Value ?? "/";
 
             if (!currentPath.StartsWith(Constants.DefaultRouteSuffix))
             {
@@ -43,20 +43,7 @@ namespace pressAgency.Middlewares
                                    .Trim()
                                    .ToLower();
 
-            if (email.Length == 0)
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    Status = 401,
-                    Message = "Unauthorized",
-                    Reason = "Invalid user email"
-                });
-
-                return;
-            }
-
-            if (!EmailRegex.IsMatch(email))
+            if (email.Length == 0 || !EmailRegex.IsMatch(email))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsJsonAsync(new
