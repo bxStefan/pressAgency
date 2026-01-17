@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using pressAgency.Domain.Context;
-using pressAgency.Shared;
+using pressAgency.Shared.Constants;
 using System.Text.RegularExpressions;
 
 namespace pressAgency.Middlewares

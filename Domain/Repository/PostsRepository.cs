@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using pressAgency.Domain.Context;
+using pressAgency.Domain.Entites;
 using pressAgency.Domain.Repository.Extensions;
 using pressAgency.Domain.Repository.Interfaces;
-using pressAgency.Shared;
+using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
+using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
 
 namespace pressAgency.Domain.Repository
@@ -15,6 +17,34 @@ namespace pressAgency.Domain.Repository
         public PostsRepository(PressDbContext pressDbContext)
         {
             _dbContext = pressDbContext;
+        }
+
+        public async Task<string> CreatePost(PostsIDTO newPost, int authorId)
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                Posts post = new()
+                {
+                    Title = newPost.Title,
+                    Content = newPost.Content,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    AuthorId = authorId
+                };
+
+                _dbContext.Posts.Add(post);
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return "Failed to create new post";
+            }
+
+            return $"Post '{newPost.Title}' created successfully";
         }
 
         public async Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize)

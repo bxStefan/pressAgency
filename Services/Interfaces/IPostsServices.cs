@@ -1,4 +1,5 @@
 ﻿using pressAgency.Shared.DTO.Common;
+using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
 
 namespace pressAgency.Services.Interfaces
@@ -8,5 +9,7 @@ namespace pressAgency.Services.Interfaces
         Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize);
 
         Task<PostsODTO> GetSinglePost(int postId);
+
+        Task<string> CreateNewPost(PostsIDTO newPost);
     }
 }

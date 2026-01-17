@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using pressAgency.Services.Interfaces;
-using pressAgency.Shared;
+using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
+using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
 
 namespace pressAgency.Controllers
@@ -43,5 +44,17 @@ namespace pressAgency.Controllers
 
             return NotFound(Constants.PostNotFound);
         }
+
+        [HttpPost("create-new")]
+        public async Task<ActionResult<string>> CreateNewPost([FromBody] PostsIDTO newPost)
+        {
+            var result = await _postsService.CreateNewPost(newPost);
+
+            if(result == "Failed to create new post")
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }

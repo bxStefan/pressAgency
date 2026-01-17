@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace pressAgency.Shared
+namespace pressAgency.Shared.Constants
 {
     public static class Constants
     {

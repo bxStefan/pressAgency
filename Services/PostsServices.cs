@@ -2,6 +2,7 @@
 using pressAgency.Domain.Repository.Interfaces;
 using pressAgency.Services.Interfaces;
 using pressAgency.Shared.DTO.Common;
+using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
 
 namespace pressAgency.Services
@@ -13,6 +14,12 @@ namespace pressAgency.Services
         public PostsServices(IPostsRepository postsRepository)
         {
             _postsRepository = postsRepository;
+        }
+
+        public async Task<string> CreateNewPost(PostsIDTO newPost)
+        {
+            var authorId = 1;
+            return await _postsRepository.CreatePost(newPost, authorId);
         }
 
         public async Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize)
