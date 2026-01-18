@@ -20,6 +20,7 @@ namespace pressAgency.Controllers
         }
 
         [HttpGet]
+        [EndpointSummary("Get all available authors")]
         public async Task<ActionResult<PagedResult<AuthorsODTO>>> GetAllAuthors(int page, int pageSize)
         {
             var authors = await _authorsServices.GetAllAuthors(page, pageSize);
@@ -30,6 +31,7 @@ namespace pressAgency.Controllers
         }
 
         [HttpGet("{authorId}")]
+        [EndpointSummary("Get single author by id")]
         public async Task<ActionResult<AuthorsODTO>> GetSingleAuthor(int authorId)
         {
             var author = await _authorsServices.GetSingleAuthor(authorId);
