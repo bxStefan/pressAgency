@@ -1,5 +1,5 @@
 
-# netPress
+# pressAgency
 
 Monolithic .NET Core based WebAPI for press agency
 
