@@ -219,6 +219,19 @@ namespace pressAgency.Services
                 };
             }
 
+            // check if post title is not conflicting with other posts
+            var samePostExists = await _postsRepository.CheckForExisitingPostAfterEdit(postToSave.PostId, 
+                                                                                       postToSave.Title.Trim().ToLower());
+
+            if (samePostExists)
+            {
+                return new GenericResponse
+                {
+                    Status = 400,
+                    Message = "Post with same title already exists"
+                };
+            }
+
             // all fine, proceed with save
             await _postsRepository.SavePost(postToSave);
 

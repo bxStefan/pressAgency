@@ -12,6 +12,8 @@ namespace pressAgency.Domain.Repository.Interfaces
 
         Task<bool> CheckForExisitingPost(string postName);
 
+        Task<bool> CheckForExisitingPostAfterEdit(int postId, string postName);
+
         Task<string> CreatePost(PostsIDTO newPost, int authorId);
 
         Task SavePost(EditedPostIDTO postToSave);

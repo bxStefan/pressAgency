@@ -24,6 +24,11 @@ namespace pressAgency.Domain.Repository
             return await _dbContext.Posts.AnyAsync(x => x.Title.ToLower().Equals(postName));
         }
 
+        public async Task<bool> CheckForExisitingPostAfterEdit(int postId, string postName)
+        {
+            return await _dbContext.Posts.AnyAsync(x => x.Title.ToLower().Equals(postName) && x.PostId != postId);
+        }
+
         public async Task<string> CreatePost(PostsIDTO newPost, int authorId)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
