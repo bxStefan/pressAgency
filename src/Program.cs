@@ -35,6 +35,15 @@ builder.Services.AddDbContext<PressDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CORS", policy =>
+    {
+        policy.AllowAnyHeader()
+              .AllowAnyOrigin();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,6 +65,8 @@ app.UseHttpsRedirection();
 app.UseMiddleware<BasicAuthMiddleware>();
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseCors("CORS");
 
 app.MapControllers();
 

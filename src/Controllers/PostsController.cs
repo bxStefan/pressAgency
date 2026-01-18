@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using pressAgency.Services.Interfaces;
 using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
@@ -9,6 +10,7 @@ namespace pressAgency.Controllers
 {
     [Route($"{Constants.DefaultRouteSuffix}/posts")]
     [ApiController]
+    [EnableCors("CORS")]
     public class PostsController : ControllerBase
     {
         private readonly IPostsServices _postsService;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using pressAgency.Services.Interfaces;
 using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
@@ -8,6 +9,7 @@ namespace pressAgency.Controllers
 {
     [Route($"{Constants.DefaultRouteSuffix}/authors")]
     [ApiController]
+    [EnableCors("CORS")]
     public class AuthorsController : ControllerBase
     {
         private readonly IAuthorsServices _authorsServices;
