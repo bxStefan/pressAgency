@@ -1,73 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using pressAgency.Domain.Context;
-using pressAgency.Domain.Repository;
-using pressAgency.Domain.Repository.Interfaces;
 using pressAgency.Extensions;
-using pressAgency.Infrastructure;
-using pressAgency.Infrastructure.Interfaces;
-using pressAgency.Middlewares;
-using pressAgency.Services;
-using pressAgency.Services.Interfaces;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Services registration
+builder.Services.ConfigureCommonServices();
 
-builder.Services.AddControllers();
+builder.Services.ConfigureApplicationServices();
 
-builder.Services.AddOpenApi();
+builder.Services.ConfigureDatabase(builder.Configuration);
 
-builder.Services.AddHttpContextAccessor();
+builder.Services.ConfigureCors();
 
-builder.Services.AddTransient<ExceptionMiddleware>();
-builder.Services.AddScoped<BasicAuthMiddleware>();
-
-builder.Services.AddScoped<IPostsRepository, PostsRepository>();
-builder.Services.AddScoped<IPostsServices, PostsServices>();
-builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
-builder.Services.AddScoped<IAuthorsServices, AuthorsServices>();
-builder.Services.AddScoped<IPostLockRepository, PostsLocksRepository>();
-
-builder.Services.AddScoped<IHttpUserContext, HttpUserContext>();
-
-builder.Services.AddDbContext<PressDbContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "CORS", policy =>
-    {
-        policy.AllowAnyHeader()
-              .AllowAnyOrigin();
-    });
-});
-
+// HTTP Request pipeline configuration
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "pressAPI";
-        options.WithClassicLayout();
-        options.WithTheme(ScalarTheme.Default);
-        options.DefaultOpenAllTags = true;
-    });
-    app.ApplyMigrations();
-}
-
-app.UseHttpsRedirection();
-
-app.UseMiddleware<BasicAuthMiddleware>();
-
-app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseCors("CORS");
-
-app.MapControllers();
+app.ConfigureHttpPipline();
 
 await app.RunAsync();
