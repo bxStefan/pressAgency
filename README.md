@@ -46,7 +46,7 @@ Spin docker compose in project root
 Visit API reference
 
 ```bash
-  http:localhost:5000/scalar
+  http://localhost:5000/scalar
 ```
 
 > Note: If you whish to run project locally, host for db is your local machine 127.0.0.1
