@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 builder.Services.AddScoped<IPostsServices, PostsServices>();
 builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
 builder.Services.AddScoped<IAuthorsServices, AuthorsServices>();
+builder.Services.AddScoped<IPostLockRepository, PostsLocksRepository>();
 
 builder.Services.AddScoped<IHttpUserContext, HttpUserContext>();
 

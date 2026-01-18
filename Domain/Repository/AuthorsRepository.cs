@@ -2,7 +2,6 @@
 using pressAgency.Domain.Context;
 using pressAgency.Domain.Repository.Extensions;
 using pressAgency.Domain.Repository.Interfaces;
-using pressAgency.Services.Interfaces;
 using pressAgency.Shared.Constants;
 using pressAgency.Shared.DTO.Common;
 using pressAgency.Shared.DTO.ODTO;
@@ -33,6 +32,17 @@ namespace pressAgency.Domain.Repository
                                        PostsByAuthor = x.Posts.Count(p => p.AuthorId == x.AuthorId)
                                    })
                                    .Paginate<AuthorsODTO>(page, pageSize);
+        }
+
+        public async Task<string> GetAuthorEmail(int authorId)
+        {
+            var authorEmail = await _dbContext.Authors
+                                              .AsNoTracking()
+                                              .Where(x => x.AuthorId == authorId)
+                                              .Select(x => x.Email)
+                                              .FirstOrDefaultAsync();
+
+            return authorEmail ?? string.Empty;
         }
 
         public async Task<AuthorsODTO> GetSingleAuthor(int authorId)

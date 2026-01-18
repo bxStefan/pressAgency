@@ -90,10 +90,10 @@ namespace pressAgency.Domain.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("LockAt")
+                    b.Property<DateTime>("LockExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("LockedExpiresAt")
+                    b.Property<DateTime>("LockedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PostId")

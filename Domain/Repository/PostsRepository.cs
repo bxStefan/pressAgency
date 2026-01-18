@@ -71,7 +71,7 @@ namespace pressAgency.Domain.Repository
                                                                 .ToString("dd-MM-yyyy HH:mm"),
                                        Author = x.Author.Name,
                                        LockedForEdit = x.PostsLocks.Any(pl => pl.PostId == x.PostId &&
-                                                                        pl.LockedExpiresAt > DateTime.UtcNow)
+                                                                        pl.LockExpiresAt > DateTime.UtcNow)
                                    })
                                    .Paginate(page, pageSize);
         }
@@ -92,7 +92,7 @@ namespace pressAgency.Domain.Repository
                                                                     .ToString("dd-MM-yyyy HH:mm"),
                                            Author = x.Author.Name ?? "Redaction",
                                            LockedForEdit = x.PostsLocks.Any(pl => pl.PostId == x.PostId &&
-                                                                            pl.LockedExpiresAt > DateTime.UtcNow)
+                                                                            pl.LockExpiresAt > DateTime.UtcNow)
                                        })
                                        .FirstOrDefaultAsync(x => x.PostId == postId);
 

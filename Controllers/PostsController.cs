@@ -55,5 +55,21 @@ namespace pressAgency.Controllers
             return Ok(result);
         }
 
+        [HttpGet("request-edit/{postId}")]
+        public async Task<ActionResult<PostEditRequestODTO>> GetPostForEdit(int postId)
+        {
+            return Ok(await _postsService.GetPostForEdit(postId));
+        }
+
+        [HttpGet("extend-edit-session/{postId}")]
+        public async Task<ActionResult<GenericResponse>> ExtendPostEditSession(int postId)
+        {
+            var response = await _postsService.ExtendPostEditSession(postId);
+
+            if(response.Status != 200)
+                return StatusCode(response.Status, response.Message);
+
+            return Ok(response.Message);
+        }
     }
 }

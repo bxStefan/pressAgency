@@ -5,7 +5,8 @@ namespace pressAgency.Domain.Repository.Interfaces
 {
     public interface IAuthorsRepository
     {
-        public Task<PagedResult<AuthorsODTO>> GetAllAuthors(int page, int pageSize);
-        public Task<AuthorsODTO> GetSingleAuthor(int authorId);
+        Task<PagedResult<AuthorsODTO>> GetAllAuthors(int page, int pageSize);
+        Task<AuthorsODTO> GetSingleAuthor(int authorId);
+        Task<string> GetAuthorEmail(int authorId);
     }
 }
