@@ -15,5 +15,7 @@ namespace pressAgency.Services.Interfaces
         Task<PostEditRequestODTO> GetPostForEdit (int postId);
 
         Task<GenericResponse> ExtendPostEditSession(int postId);
+
+        Task<GenericResponse> SavePost(EditedPostIDTO postToSave);
     }
 }

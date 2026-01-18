@@ -98,5 +98,28 @@ namespace pressAgency.Domain.Repository
 
             return post ?? new PostsODTO();
         }
+
+        public async Task SavePost(EditedPostIDTO postToSave)
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _dbContext.Posts
+                                .Where(x => x.PostId == postToSave.PostId)
+                                .ExecuteUpdateAsync(x => x
+                                    .SetProperty(p => p.Title, postToSave.Title.Trim())
+                                    .SetProperty(p => p.Content, postToSave.Content.Trim())
+                                    .SetProperty(p => p.UpdatedAt, DateTime.UtcNow)
+                                );
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

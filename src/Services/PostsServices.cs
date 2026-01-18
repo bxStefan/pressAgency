@@ -82,6 +82,7 @@ namespace pressAgency.Services
             {
                 // lock post for other users and return lock details
                 var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
+
                 return new PostEditRequestODTO
                 {
                     Post = post,
@@ -105,6 +106,7 @@ namespace pressAgency.Services
 
                 // lock post for other users and return lock details
                 var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
+
                 return new PostEditRequestODTO
                 {
                     Post = post,
@@ -176,6 +178,58 @@ namespace pressAgency.Services
             response.Message = "Edit session extended successfully";
 
             return response;
+        }
+
+        public async Task<GenericResponse> SavePost(EditedPostIDTO postToSave)
+        {
+            // get post
+            var post = await _postsRepository.GetSinglePost(postToSave.PostId);
+
+            // Delete should be also locked during editing
+            // Since delete is not implemented at all, we are just cheking if valid post is provided to service
+            if (post == null) 
+            {
+                return new GenericResponse
+                {
+                    Status = 404,
+                    Message = "Post does not exist"
+                };
+            }
+
+            // get lock
+            var lockRecord = await _postLockRepository.GetCurrentLock(postToSave.PostId);
+
+            // lock does not exist, prevent futher operations
+            if (lockRecord == null)
+            {
+                return new GenericResponse
+                {
+                    Status = 400,
+                    Message = "Edit session for this post is invalid. Expired or not created"
+                };
+            }
+
+            // author that did not required this edit session can not operate on save
+            if (lockRecord.AuthorId != _httpUserContext.AuthorId)
+            {
+                return new GenericResponse
+                {
+                    Status = 403,
+                    Message = "You do not have priviledges to edit this post"
+                };
+            }
+
+            // all fine, proceed with save
+            await _postsRepository.SavePost(postToSave);
+
+            // delete lock after save
+            await _postLockRepository.DeleteExpiredLock(lockRecord.PostLockId);
+
+            return new GenericResponse
+            {
+                Status = 200,
+                Message = "Post updated successfully"
+            };
         }
     }
 }

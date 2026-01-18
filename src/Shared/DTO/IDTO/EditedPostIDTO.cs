@@ -2,8 +2,11 @@
 
 namespace pressAgency.Shared.DTO.IDTO
 {
-    public class PostsIDTO
+    public class EditedPostIDTO
     {
+        [Required(ErrorMessage = "Post identificator not provided")]
+        public int PostId { get; set; }
+
         [Required(ErrorMessage = "Post title is required field")]
         [StringLength(100, ErrorMessage = "Post title cannot be longer than 100 characters")]
         public required string Title { get; set; }
