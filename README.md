@@ -1,7 +1,7 @@
 
 # pressAgency
 
-Monolithic .NET Core based WebAPI for press agency
+Monolith .NET Core based WebAPI for press agency
 
 
 
