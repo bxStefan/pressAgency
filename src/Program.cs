@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using pressAgency.Domain.Context;
 using pressAgency.Domain.Repository;
 using pressAgency.Domain.Repository.Interfaces;
+using pressAgency.Extensions;
 using pressAgency.Infrastructure;
 using pressAgency.Infrastructure.Interfaces;
 using pressAgency.Middlewares;
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
         options.WithTheme(ScalarTheme.Default);
         options.DefaultOpenAllTags = true;
     });
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

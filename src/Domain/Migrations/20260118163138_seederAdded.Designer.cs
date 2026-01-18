@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using pressAgency.Domain.Context;
@@ -11,9 +12,11 @@ using pressAgency.Domain.Context;
 namespace pressAgency.Domain.Migrations
 {
     [DbContext(typeof(PressDbContext))]
-    partial class PressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260118163138_seederAdded")]
+    partial class seederAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

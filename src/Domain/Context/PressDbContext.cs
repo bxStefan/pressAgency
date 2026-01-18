@@ -14,6 +14,7 @@ namespace pressAgency.Domain.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            new DBInitializer(modelBuilder).Seed();
 
             modelBuilder.Entity<Authors>(entity =>
             {
