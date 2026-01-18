@@ -54,7 +54,9 @@ Visit API reference
 
 Now when we have project up and running, we can consume APIs
 
-#### Get all items
+#### Get single author
+
+Every endpoint requires authentication via valid email address
 
 ```http
   GET /api/v1/authors/authorId
