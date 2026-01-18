@@ -1,5 +1,4 @@
-﻿using pressAgency.Domain.Entites;
-using pressAgency.Shared.DTO.Common;
+﻿using pressAgency.Shared.DTO.Common;
 using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
 

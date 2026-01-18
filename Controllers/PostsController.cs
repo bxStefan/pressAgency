@@ -23,12 +23,11 @@ namespace pressAgency.Controllers
         {
             var posts = await _postsService.GetAllPosts(page, pageSize);
 
-            if(posts.Records?.Count > 0)
-            {
-                return Ok(posts);
-            }
+            if(posts.Records?.Count == 0)
+                return NotFound();
 
-            return NotFound(Constants.NoPostsFound);
+            return Ok(posts);
+
         }
 
         [HttpGet("{postId}")]
@@ -36,21 +35,19 @@ namespace pressAgency.Controllers
         {
             var post = await _postsService.GetSinglePost(postId);
 
-            if (post.PostId != 0)
-            {
-                return Ok(post);
-            }
+            if (post.PostId == null)
+                return NotFound();
 
-            return NotFound(Constants.PostNotFound);
+            return Ok(post);
         }
 
         [HttpPost("create-new")]
-        public async Task<ActionResult<string>> CreateNewPost([FromBody] PostsIDTO newPost)
+        public async Task<ActionResult<GenericResponse>> CreateNewPost([FromBody] PostsIDTO newPost)
         {
             var result = await _postsService.CreateNewPost(newPost);
 
-            if(result == "Failed to create new post" || result == "Post already exists")
-                return BadRequest(result);
+            if (result.Status != 200)
+                return StatusCode(result.Status, result);
 
             return Ok(result);
         }
@@ -58,18 +55,19 @@ namespace pressAgency.Controllers
         [HttpGet("request-edit/{postId}")]
         public async Task<ActionResult<PostEditRequestODTO>> GetPostForEdit(int postId)
         {
-            return Ok(await _postsService.GetPostForEdit(postId));
+            var postForEdit = await _postsService.GetPostForEdit(postId);
+            return Ok(postForEdit);
         }
 
         [HttpGet("extend-edit-session/{postId}")]
         public async Task<ActionResult<GenericResponse>> ExtendPostEditSession(int postId)
         {
-            var response = await _postsService.ExtendPostEditSession(postId);
+            var result = await _postsService.ExtendPostEditSession(postId);
 
-            if(response.Status != 200)
-                return StatusCode(response.Status, response.Message);
+            if(result.Status != 200)
+                return StatusCode(result.Status, result);
 
-            return Ok(response.Message);
+            return Ok(result);
         }
     }
 }

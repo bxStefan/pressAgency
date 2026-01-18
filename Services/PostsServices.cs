@@ -4,7 +4,6 @@ using pressAgency.Services.Interfaces;
 using pressAgency.Shared.DTO.Common;
 using pressAgency.Shared.DTO.IDTO;
 using pressAgency.Shared.DTO.ODTO;
-using pressAgency.Shared.Enums;
 using static pressAgency.Shared.Enums.LockStateEnum;
 
 namespace pressAgency.Services
@@ -27,16 +26,122 @@ namespace pressAgency.Services
             _authorsRepository = authorsRepository;
         }
 
-        public async Task<string> CreateNewPost(PostsIDTO newPost)
+        public async Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize)
+        {
+            return await _postsRepository.GetAllPosts(page, pageSize);
+        }
+
+        public async Task<PostsODTO> GetSinglePost(int postId)
+        {
+            return await _postsRepository.GetSinglePost(postId);
+        }
+
+        public async Task<GenericResponse> CreateNewPost(PostsIDTO newPost)
         {
             int authorId = _httpUserContext.AuthorId;
+            var response = new GenericResponse();
 
+            // check if post with same name exists
             var samePostExists = await _postsRepository.CheckForExisitingPost(newPost.Title.Trim().ToLower());
 
             if (samePostExists)
-                return "Post already exists";
+            {
+                response.Status = 400;
+                response.Message = "Post already exists";
+                return response;
+            }
 
-            return await _postsRepository.CreatePost(newPost, authorId);
+            var createResponse = await _postsRepository.CreatePost(newPost, authorId);
+
+            switch(createResponse)
+            {
+                case "Success":
+                    response.Status = 200;
+                    response.Message = "Post created successfully";
+                    break;
+
+                case "Fail":
+                    response.Status = 500;
+                    response.Message = "An error occured while creating the post";
+                    break;
+            }
+
+            return response;
+        }
+
+        public async Task<PostEditRequestODTO> GetPostForEdit(int postId)
+        {
+            // get requsted post
+            var post = await _postsRepository.GetSinglePost(postId);
+
+            // check if post has lock record
+            var lockRecord = await _postLockRepository.GetCurrentLock(postId);
+
+            // lock record does not exist, post is free for editing
+            if (lockRecord == null)
+            {
+                // lock post for other users and return lock details
+                var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
+                return new PostEditRequestODTO
+                {
+                    Post = post,
+                    LockState = LockState.Created.ToString().ToLower(),
+                    Lock = new PostLockStatusODTO
+                    {
+                        PostLockId = newLock.PostLockId,
+                        LockedAt = newLock.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                        LockExpiresAt = newLock.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                        LockedByCurrentUser = true,
+                        LockedBy = _httpUserContext.AuthorEmail
+                    }
+                };
+            }
+
+            // lock expired on current post, free for editing
+            if (lockRecord.LockExpiresAt <= DateTime.UtcNow)
+            {
+                // delete expired lock
+                await _postLockRepository.DeleteExpiredLock(lockRecord.PostLockId);
+
+                // lock post for other users and return lock details
+                var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
+                return new PostEditRequestODTO
+                {
+                    Post = post,
+                    LockState = LockState.Created.ToString().ToLower(),
+                    Lock = new PostLockStatusODTO
+                    {
+                        PostLockId = newLock.PostLockId,
+                        LockedAt = newLock.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                        LockExpiresAt = newLock.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                        LockedByCurrentUser = true,
+                        LockedBy = _httpUserContext.AuthorEmail
+                    }
+                };
+            }
+
+            // post is locked, collect lock details and return status of post
+
+            // check if lock is by current user
+            bool byCurrentUser = lockRecord.AuthorId == _httpUserContext.AuthorId;
+
+            string lockedBy = byCurrentUser ? _httpUserContext.AuthorEmail :
+                                              (await _authorsRepository.GetAuthorEmail(lockRecord.AuthorId));
+
+            return new PostEditRequestODTO
+            {
+                Post = post,
+                LockState = byCurrentUser ? LockState.Already_Owned.ToString().ToLower() :
+                                            LockState.Locked.ToString().ToLower(),
+                Lock = new PostLockStatusODTO
+                {
+                    PostLockId = lockRecord.PostLockId,
+                    LockedAt = lockRecord.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                    LockExpiresAt = lockRecord.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
+                    LockedByCurrentUser = byCurrentUser,
+                    LockedBy = lockedBy
+                }
+            };
         }
 
         public async Task<GenericResponse> ExtendPostEditSession(int postId)
@@ -73,89 +178,6 @@ namespace pressAgency.Services
             return response;
         }
 
-        public async Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize)
-        {
-            return await _postsRepository.GetAllPosts(page, pageSize);
-        }
-
-        public async Task<PostEditRequestODTO> GetPostForEdit(int postId)
-        {
-            // get requsted post
-            var post = await _postsRepository.GetSinglePost(postId);
-
-            // check if post has lock record
-            var lockRecord = await _postLockRepository.GetCurrentLock(postId);
-
-            // lock record does not exist, post is free for editing
-            if (lockRecord == null)
-            {
-                // lock post for other users and return lock details
-                var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
-                return new PostEditRequestODTO
-                {
-                    Post = post,
-                    LockState = LockState.Created.ToString().ToLower(),
-                    Lock = new PostLockStatusODTO
-                    {
-                        PostLockId = newLock.PostLockId,
-                        LockedAt = newLock.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                        LockExpiresAt = newLock.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                        LockedByCurrentUser = true,
-                        LockedBy = _httpUserContext.AuthorEmail
-                    }
-                };
-            }
-
-            // lock expired on current post, free for editing
-            if(lockRecord.LockExpiresAt <= DateTime.UtcNow)
-            {
-                // delete expired lock
-                await _postLockRepository.DeleteExpiredLock(lockRecord.PostLockId);
-
-                // lock post for other users and return lock details
-                var newLock = await _postLockRepository.CreateNewLock(postId, _httpUserContext.AuthorId);
-                return new PostEditRequestODTO
-                {
-                    Post = post,
-                    LockState = LockState.Created.ToString().ToLower(),
-                    Lock = new PostLockStatusODTO
-                    {
-                        PostLockId = newLock.PostLockId,
-                        LockedAt = newLock.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                        LockExpiresAt = newLock.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                        LockedByCurrentUser = true,
-                        LockedBy = _httpUserContext.AuthorEmail
-                    }
-                };
-            }
-
-            // post is locked, collect lock details and return status of post
-
-            // check if lock is by current user
-            bool byCurrentUser = lockRecord.AuthorId == _httpUserContext.AuthorId;
-
-            string lockedBy = byCurrentUser ? _httpUserContext.AuthorEmail : 
-                                              (await _authorsRepository.GetAuthorEmail(lockRecord.AuthorId));
-
-            return new PostEditRequestODTO
-            {
-                Post = post,
-                LockState = byCurrentUser ? LockState.Already_Owned.ToString().ToLower() : 
-                                            LockState.Locked.ToString().ToLower(),
-                Lock = new PostLockStatusODTO
-                {
-                    PostLockId = lockRecord.PostLockId,
-                    LockedAt = lockRecord.LockedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                    LockExpiresAt = lockRecord.LockExpiresAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm"),
-                    LockedByCurrentUser = byCurrentUser,
-                    LockedBy = lockedBy
-                }
-            };
-        }
-
-        public async Task<PostsODTO> GetSinglePost(int postId)
-        {
-            return await _postsRepository.GetSinglePost(postId);
-        }
+        
     }
 }

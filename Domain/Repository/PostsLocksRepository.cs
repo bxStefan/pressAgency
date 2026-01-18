@@ -2,7 +2,6 @@
 using pressAgency.Domain.Context;
 using pressAgency.Domain.Entites;
 using pressAgency.Domain.Repository.Interfaces;
-using pressAgency.Shared.DTO.ODTO;
 
 namespace pressAgency.Domain.Repository
 {

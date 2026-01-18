@@ -10,7 +10,7 @@ namespace pressAgency.Services.Interfaces
 
         Task<PostsODTO> GetSinglePost(int postId);
 
-        Task<string> CreateNewPost(PostsIDTO newPost);
+        Task<GenericResponse> CreateNewPost(PostsIDTO newPost);
 
         Task<PostEditRequestODTO> GetPostForEdit (int postId);
 

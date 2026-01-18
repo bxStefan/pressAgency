@@ -46,10 +46,10 @@ namespace pressAgency.Domain.Repository
             catch
             {
                 await transaction.RollbackAsync();
-                return "Failed to create new post";
+                return "Fail";
             }
 
-            return $"Post '{newPost.Title}' created successfully";
+            return "Success";
         }
 
         public async Task<PagedResult<PostsODTO>> GetAllPosts(int page, int pageSize)

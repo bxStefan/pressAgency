@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace pressAgency.Shared.Constants
+﻿namespace pressAgency.Shared.Constants
 {
     public static class Constants
     {
@@ -8,13 +6,6 @@ namespace pressAgency.Shared.Constants
         public const int DefaultPage = 1;
         public const int DefaultPageSize = 10;
         public const int MaxPageSize = 100;
-
-        // Controller output messages
-        public const string NoPostsFound = "No posts found";
-        public const string PostNotFound = "Post not found";
-
-        public const string NoAuthorsFound = "No authors found";
-        public const string AuthorNotFound = "Author not found";
 
         // Route props
         public const string DefaultRouteSuffix = "/api/v1";
