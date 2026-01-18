@@ -55,3 +55,4 @@ nunit-*.xml
 /.vs/pressAgency.slnx
 /.vs
 /appsettings.json
+/src/appsettings.json
