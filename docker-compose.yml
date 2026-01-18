@@ -1,0 +1,26 @@
+services:
+  pressagency.api:
+    container_name: press.api
+    build:
+      context: src
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5000
+    ports:
+      - 5000:5000
+  
+  pressagency.db:
+      image: postgres:18
+      container_name: press.database
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=admin
+        - POSTGRES_DB=pressDB
+      volumes:
+        - pgdata:/var/lib/postgresql 
+      ports:
+        - 5432:5432
+
+volumes:
+  pgdata:

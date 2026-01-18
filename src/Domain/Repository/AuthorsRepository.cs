@@ -34,17 +34,6 @@ namespace pressAgency.Domain.Repository
                                    .Paginate<AuthorsODTO>(page, pageSize);
         }
 
-        public async Task<string> GetAuthorEmail(int authorId)
-        {
-            var authorEmail = await _dbContext.Authors
-                                              .AsNoTracking()
-                                              .Where(x => x.AuthorId == authorId)
-                                              .Select(x => x.Email)
-                                              .FirstOrDefaultAsync();
-
-            return authorEmail ?? string.Empty;
-        }
-
         public async Task<AuthorsODTO> GetSingleAuthor(int authorId)
         {
             var author = await _dbContext.Authors
@@ -61,5 +50,18 @@ namespace pressAgency.Domain.Repository
 
             return author ?? new AuthorsODTO();
         }
+
+        public async Task<string> GetAuthorEmail(int authorId)
+        {
+            var authorEmail = await _dbContext.Authors
+                                              .AsNoTracking()
+                                              .Where(x => x.AuthorId == authorId)
+                                              .Select(x => x.Email)
+                                              .FirstOrDefaultAsync();
+
+            return authorEmail ?? string.Empty;
+        }
+
+
     }
 }

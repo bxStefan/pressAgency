@@ -14,6 +14,11 @@ namespace pressAgency.Domain.Repository
             _dbContext = pressDbContext;
         }
 
+        public async Task<PostsLock?> GetCurrentLock(int postId)
+        {
+            return await _dbContext.PostsLocks.FirstOrDefaultAsync(x => x.PostId == postId);
+        }
+
         public async Task<PostsLock> CreateNewLock(int postId, int authorId)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -51,11 +56,6 @@ namespace pressAgency.Domain.Repository
                 _dbContext.PostsLocks.Remove(expiredLock);
                 await _dbContext.SaveChangesAsync();
             }
-        }
-
-        public async Task<PostsLock?> GetCurrentLock(int postId)
-        {
-            return await _dbContext.PostsLocks.FirstOrDefaultAsync(x => x.PostId == postId);
         }
 
         public async Task ExtendCurrentLock(PostsLock currentLock)

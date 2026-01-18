@@ -164,7 +164,7 @@ namespace pressAgency.Services
             if (lockRecord.AuthorId != _httpUserContext.AuthorId)
             {
                 response.Status = 403;
-                response.Message = "You do not have priviledge to edit this post";
+                response.Message = "You do not have priviledges to edit this post";
 
                 return response;
             }
@@ -177,7 +177,5 @@ namespace pressAgency.Services
 
             return response;
         }
-
-        
     }
 }
