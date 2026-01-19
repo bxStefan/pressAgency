@@ -51,7 +51,7 @@ Visit API reference
 
 > Note: If you whish to run project locally, host for db is your local machine 127.0.0.1
 
-> Note: Dummy or test data is managed with FluentAPI. Database schema is self managed with EF Core
+> Note: Dummy or test data is managed with FluentAPI. Database schema is self managed with EF Core (migrations will be applied on project startup, so if schema does not exists, migration will create it)
 
 ## API Reference
 
